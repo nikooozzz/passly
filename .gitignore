@@ -17,3 +17,8 @@ dist/
 *.log
 
 .pytest_cache/
+
+*.pkg.tar.zst
+*.pkg.tar.zst.sig
+pkg/
+src/*!(passly)
