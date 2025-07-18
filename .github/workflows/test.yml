@@ -1,4 +1,4 @@
-name: Test Passly
+name: PasslyTest
 
 on:
   pull_request:

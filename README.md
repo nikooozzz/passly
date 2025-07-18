@@ -2,6 +2,10 @@
 
 A simple, open-source CLI toolkit for auditing and cleaning exported password manager data.
 
+![Test Status](https://img.shields.io/github/workflow/status/nikooozzz/passly/PasslyTest)
+![AUR Status](https://img.shields.io/aur/version/passly?label=AUR)
+![PyPI version](https://img.shields.io/pypi/v/passly)
+
 ---
 
 ## Features (MVP)
