@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "passly"
+version = "0.1.0"
+description = "Password utilities CLI tool"
+readme = "README.md"
+authors = [
+    { name = "nikooozzz" }
+]
+license = { text = "MIT" }
+keywords = ["password", "security", "cli", "utilities", "tool"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "tldextract>=3.0"
+]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tools.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+passly = "passly.main:main"
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "pre-commit",
+    "flake8",
+    "pytest"
+]
+
+[tool.black]
+line-length = 88
+target-version = ["py39"]
+
+[tool.isort]
+profile = "black"
