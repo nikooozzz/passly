@@ -21,4 +21,3 @@ dist/
 *.pkg.tar.zst
 *.pkg.tar.zst.sig
 pkg/
-src/*!(passly)
