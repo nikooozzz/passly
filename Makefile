@@ -21,5 +21,5 @@ test:
 clean:
 	find . -type f -name "*.pyc" -delete
 	find . -type d -name "__pycache__" -exec rm -rf {} +
-	rm -rf .pytest_cache build/ dist/
+	rm -rf .pytest_cache build/ dist/ pkg/
 	find . -type d -name "*.egg-info" -exec rm -rf {} +
