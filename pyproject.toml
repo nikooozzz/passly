@@ -24,13 +24,13 @@ dependencies = [
 [tool.setuptools.package-dir]
 "" = "src"
 
-[tools.setuptools.packages.find]
+[tool.setuptools.packages.find]
 where = ["src"]
 
 [project.scripts]
 passly = "passly.main:main"
 
-[project.optional-dependencies]
+[tools.setuptools.optional-dependencies]
 dev = [
     "black",
     "pre-commit",
