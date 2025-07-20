@@ -3,8 +3,11 @@ from typing import List, Dict
 
 
 class BaseParser(ABC):
+    name: str = "base"
+
+    @classmethod
     @abstractmethod
-    def detect(self, file_path: str) -> bool:
+    def detect(cls, file_path: str) -> bool:
         """Check if this parser can handle the file."""
         pass
 
