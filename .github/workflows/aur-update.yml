@@ -8,6 +8,7 @@ on:
 jobs:
   update-aur:
     runs-on: ubuntu-latest
+    container: archlinux/archlinux
     steps:
       - name: Checkout main repo
         uses: actions/checkout@v3
