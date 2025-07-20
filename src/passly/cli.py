@@ -1,5 +1,6 @@
 import argparse
 from passly.checks import CHECKS
+from passly.parsers import PARSERS
 
 
 def parse_args():
@@ -18,10 +19,12 @@ def parse_args():
     parser.add_argument("--check", "-c", required=True, help=check_help)
 
     parser.add_argument("--output", "-o", help="Optional path to save the report")
+
+    available_vendors = ["auto"] + PARSERS.keys()
     parser.add_argument(
         "--vendor",
         "-v",
-        choices=["auto", "bitwarden", "1password"],
+        choices=available_vendors,
         default="auto",
         help="Specify the vendor of the input file (default: auto)",
     )
