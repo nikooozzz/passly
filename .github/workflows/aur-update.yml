@@ -1,4 +1,4 @@
-name: Update AUR on Release
+name: Deploy to AUR
 
 on:
   release:
@@ -6,49 +6,40 @@ on:
   workflow_dispatch:
 
 jobs:
-  update-aur:
+  build_and_push:
     runs-on: ubuntu-latest
-    container: archlinux/archlinux
+    container:
+      image: archlinux:latest
     steps:
-      - name: Checkout main repo
+      - name: Install base-devel and git (required for makepkg)
+        run: |
+          pacman -Sy --noconfirm base-devel git
+
+      - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          repository: nikooozzz/passly
-          ref: ${{ github.ref }}
 
       - name: Extract version from tag
         id: vars
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
 
-      - name: Setup SSH_PRIVATE_KEY
-        uses: webfactory/ssh-agent@v0.5.4
-        with:
-          ssh-private-key: ${{ secrets.AUR_SSH_KEY }}
-
-      - name: Add AUR to known_hosts
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
-
-      - name: Clone AUR repo
-        run: git clone ssh://aur@aur.archlinux.org/passly.git
-
       - name: Update PKGBUILD version and checksum
         run: |
-          cd passly
+          useradd -m builder
+          chown -R builder:builder .
+          sudo -u builder bash -c '
           sed -i "s/^pkgver=.*/pkgver=${{ env.VERSION }}/" PKGBUILD
           curl -L -o source.tar.gz https://github.com/nikooozzz/passly/archive/refs/tags/v${{ env.VERSION }}.tar.gz
           SHA256=$(sha256sum source.tar.gz | cut -d' ' -f1)
-          sed -i "s|^sha256sums=.*|sha256sums=('${SHA256}')|" PKGBUILD
+          sed -i "s/^sha256sums=.*/sha256sums=('$SHA256')/" PKGBUILD
           makepkg --printsrcinfo > .SRCINFO
+          '
 
-      - name: Commit and push to AUR
-        run: |
-          cd passly-aur
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add PKGBUILD .SRCINFO
-          git commit -m "Update to v${{ env.VERSION }}"
-          git push origin master
+      - name: Push to AUR
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_KEY }}
+          SSH_AUTH_SOCK: ${{ secrets.SSH_AUTH_SOCK }}
+        run: |
+          # Add SSH key to ssh-agent here if needed
+          cd passly-aur
+          git add PKGBUILD .SRCINFO
+          git commit -m "Update to version ${{ env.VERSION }}"
+          git push origin master
