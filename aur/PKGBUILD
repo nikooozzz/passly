@@ -1,6 +1,6 @@
 # Maintainer: Nikolai Käck nikolaikack@icloud.com
 pkgname=passly
-pkgver=0.2.0
+pkgver=0.2.1
 pkgrel=1
 pkgdesc="A CLI toolkit for auditing and cleaning exported password manager data"
 arch=('any')
