@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, Dict, Any
+from typing import List, Dict
 
 
 class BaseParser(ABC):
@@ -9,6 +9,13 @@ class BaseParser(ABC):
         pass
 
     @abstractmethod
-    def parse(self, file_path: str) -> List[Dict[str, Any]]:
-        """Convert the file into a normalized format"""
+    def parse(self, file_path: str) -> List[Dict[str, str]]:
+        """
+        Parse the file and return a list of entries as dictionaries.
+        Each dict should have normalized keys:
+        - login_uri
+        - login_username
+        - login_password
+        - login_totp
+        """
         pass
