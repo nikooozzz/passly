@@ -19,10 +19,6 @@ class BitwardenParser(BaseParser):
         "login_totp",
     ]
 
-    @classmethod
-    def detect(cls, header: List[str]) -> bool:
-        return [col.strip().lower() for col in header] == cls.EXPECTED_COLUMNS
-
     def parse(self, rows: List[Dict[str, str]]) -> List[Dict[str, str]]:
         return [
             {
