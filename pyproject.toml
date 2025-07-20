@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "passly"
-version = "0.1.0"
+version = "0.2.0"
 description = "Password utilities CLI tool"
 readme = "README.md"
 authors = [
