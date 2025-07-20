@@ -1,45 +1,45 @@
-name: Deploy to AUR
+name: Publish to AUR
 
 on:
   release:
     types: [published]
-  workflow_dispatch:
 
 jobs:
-  build_and_push:
+  aur-release:
+    name: Push AUR Package
     runs-on: ubuntu-latest
-    container:
-      image: archlinux:latest
+
     steps:
-      - name: Install base-devel and git (required for makepkg)
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.AUR_SSH_KEY }}
+
+      - name: Add AUR host key
         run: |
-          pacman -Sy --noconfirm base-devel git
+          mkdir -p ~/.ssh
+          ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
 
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Extract version from tag
-        id: vars
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
-
-      - name: Update PKGBUILD version and checksum
+      - name: Configure Git
         run: |
-          useradd -m builder
-          chown -R builder:builder .
-          sudo -u builder bash -c '
-          sed -i "s/^pkgver=.*/pkgver=${{ env.VERSION }}/" PKGBUILD
-          curl -L -o source.tar.gz https://github.com/nikooozzz/passly/archive/refs/tags/v${{ env.VERSION }}.tar.gz
-          SHA256=$(sha256sum source.tar.gz | cut -d' ' -f1)
-          sed -i "s/^sha256sums=.*/sha256sums=('$SHA256')/" PKGBUILD
-          makepkg --printsrcinfo > .SRCINFO
-          '
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Push to AUR
-        env:
-          SSH_AUTH_SOCK: ${{ secrets.SSH_AUTH_SOCK }}
+      - name: Clone AUR repository
         run: |
-          # Add SSH key to ssh-agent here if needed
-          cd passly-aur
+          git clone ssh://aur@aur.archlinux.org/passly.git aur-repo
+
+      - name: Copy PKGBUILD and .SRCINFO
+        run: |
+          cp aur/PKGBUILD aur-repo/
+          cp aur/.SRCINFO aur-repo/
+
+      - name: Commit and push
+        run: |
+          cd aur-repo
           git add PKGBUILD .SRCINFO
-          git commit -m "Update to version ${{ env.VERSION }}"
-          git push origin master
+          git commit -m "Update to version ${{ github.event.release.tag_name }}"
+          git push
