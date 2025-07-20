@@ -18,6 +18,13 @@ def parse_args():
     parser.add_argument("--check", "-c", required=True, help=check_help)
 
     parser.add_argument("--output", "-o", help="Optional path to save the report")
+    parser.add_argument(
+        "--vendor",
+        "-v",
+        choices=["auto", "bitwarden", "1password"],
+        default="auto",
+        help="Specify the vendor of the input file (default: auto)",
+    )
 
     color_group = parser.add_mutually_exclusive_group()
     color_group.add_argument(

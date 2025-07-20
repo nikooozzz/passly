@@ -1,17 +1,8 @@
 import sys
-import csv
 from passly.cli import parse_args
 from passly.output import OutputManager
 from passly.checks import CHECKS
-
-
-def load_entries(input_path):
-    entries = []
-    with open(input_path, newline="", encoding="utf-8") as csvfile:
-        reader = csv.DictReader(csvfile)
-        for row in reader:
-            entries.append(row)
-    return entries
+from passly.parsers import get_parser
 
 
 def main():
@@ -23,7 +14,8 @@ def main():
             print(f"Unknown check: {c}")
             sys.exit(1)
 
-    entries = load_entries(args.input)
+    format_parser = get_parser(args.vendor, args.input)
+    entries = format_parser.parse(args.input)
     output = OutputManager(output_path=args.output, color=args.color)
 
     for check_name in selected_checks:
