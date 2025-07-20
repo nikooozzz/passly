@@ -1,7 +1,10 @@
 from typing import Optional, Dict, Type
 from passly.parsers.base import BaseParser
+from passly.parsers.bitwarden import BitwardenParser
 
-PARSERS: Dict[str, Type[BaseParser]] = {}
+PARSERS: Dict[str, Type[BaseParser]] = {
+    "bitwarden": BitwardenParser,
+}
 
 
 def get_parser(vendor: str, file_path: str) -> Optional[BaseParser]:
@@ -24,8 +27,8 @@ def auto_detect_vendor(file_path: str) -> str:
     with open(file_path, "r", encoding="utf-8") as file:
         header = file.readline()
 
-    for vendor, parser_cls in PARSERS.items():
-        if parser_cls().detect(header):
-            return vendor
+    for parser_cls in PARSERS.values():
+        if parser_cls.detect(header.split(",")):
+            return parser_cls.name
 
     raise ValueError("Could not determine the vendor of the input file.")
