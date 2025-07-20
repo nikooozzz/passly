@@ -16,7 +16,7 @@ format:
 	black src tests
 
 test:
-	pytest tests
+	PYTHONPATH=src pytest tests
 
 clean:
 	find . -type f -name "*.pyc" -delete

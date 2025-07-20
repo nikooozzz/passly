@@ -3,10 +3,12 @@ from typing import List, Dict
 
 
 class BaseParser(ABC):
-    @abstractmethod
-    def detect(self, file_path: str) -> bool:
+    name: str = "base"
+
+    @classmethod
+    def detect(cls, header: List[str]) -> bool:
         """Check if this parser can handle the file."""
-        pass
+        return [col.strip().lower() for col in header] == cls.EXPECTED_COLUMNS
 
     @abstractmethod
     def parse(self, file_path: str) -> List[Dict[str, str]]:
