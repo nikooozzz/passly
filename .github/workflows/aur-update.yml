@@ -23,6 +23,11 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.AUR_SSH_KEY }}
 
+      - name: Add AUR to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
+
       - name: Clone AUR repo
         run: git clone ssh://aur@aur.archlinux.org/passly.git
 
